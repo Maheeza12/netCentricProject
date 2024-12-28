@@ -1,0 +1,13 @@
+{
+    "name": "docker-jenkins-project",
+    "version": "1.0.0",
+    "description": "A Node.js project with Docker and Jenkins",
+    "main": "main.js",
+    "scripts": {
+      "start": "node main.js",
+      "test": "node test.js"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+  }
+  
