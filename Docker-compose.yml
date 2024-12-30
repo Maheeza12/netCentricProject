@@ -1,27 +1,33 @@
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    ports:
-      - "3000:3000"
-
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ./frontend  # Path to your frontend directory with the Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "8080:80"  # Exposes port 8080 on host and port 80 in container (for Nginx)
+    volumes:
+      - ./frontend:/usr/share/nginx/html  # Optionally mount files for easy updates
 
-  db:
-    image: mysql:5.7
+  backend:
+    build:
+      context: ./backend  # Path to your backend directory with the Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Exposes port 3000 on host and port 3000 in container (for Node.js)
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - mysql  # If you have a database container, this ensures the backend waits for it
+
+  mysql:
+    image: mysql:8
     environment:
       MYSQL_ROOT_PASSWORD: MDIsql1223@#
       MYSQL_DATABASE: student_management
     ports:
-      - "3306:3306"
+      - "3306:3306"  # Exposes MySQL on host port 3306
     volumes:
-      - db_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql  # Persist data
 
 volumes:
-  db_data:
+  mysql_data:  # Declare a volume for persistent data
