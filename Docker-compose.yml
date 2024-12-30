@@ -2,7 +2,7 @@ services:
   frontend:
     build:
       context: ./frontend  # Path to your frontend directory with the Dockerfile
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.frontend
     ports:
       - "8080:80"  # Exposes port 8080 on host and port 80 in container (for Nginx)
     volumes:
@@ -11,7 +11,7 @@ services:
   backend:
     build:
       context: ./backend  # Path to your backend directory with the Dockerfile
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.backend
     ports:
       - "3000:3000"  # Exposes port 3000 on host and port 3000 in container (for Node.js)
     environment:
