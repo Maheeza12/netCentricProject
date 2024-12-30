@@ -4,10 +4,15 @@
     "description": "A Node.js project with Docker and Jenkins",
     "main": "main.js",
     "scripts": {
-      "start": "node main.js",
-      "test": "node test.js"
+        "start": "node main.js",
+        "test": "node test.js"
     },
-    "dependencies": {},
-    "devDependencies": {}
-  }
-  
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.21.2",
+        "mysql2": "^3.12.0"
+    }
+}

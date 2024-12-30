@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management</title>
+</head>
+<body>
+    <h1>Student Management System</h1>
+    
+    <!-- Form to Add a New Student -->
+    <form id="studentForm">
+        <input type="text" id="IndexNo" placeholder="Index Number" required />
+        <input type="text" id="Name" placeholder="Name" required />
+        <input type="date" id="DoB" placeholder="Date of Birth" required />
+        <input type="number" id="GPA" placeholder="GPA" required />
+        <button type="submit">Add Student</button>
+    </form>
+
+    <h2>All Students</h2>
+    <table id="studentsTable">
+        <thead>
+            <tr>
+                <th>Index No</th>
+                <th>Name</th>
+                <th>Date of Birth</th>
+                <th>GPA</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+
+    <script>
+        // Function to fetch and display all students
+        function fetchStudents() {
+            fetch('http://localhost:3000/students')
+                .then(response => response.json())
+                .then(data => {
+                    const studentsTable = document.querySelector("#studentsTable tbody");
+                    studentsTable.innerHTML = '';  // Clear the table
+                    data.forEach(student => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${student.IndexNo}</td>
+                            <td>${student.Name}</td>
+                            <td>${student.DoB}</td>
+                            <td>${student.GPA}</td>
+                            <td><button onclick="deleteStudent(${student.id})">Delete</button></td>
+                        `;
+                        studentsTable.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching students:', error));
+        }
+
+        // Fetch the students when the page loads
+        window.onload = fetchStudents;
+
+        // Handle the form submission to add a student
+        document.getElementById('studentForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent form from refreshing the page
+
+            // Get form data
+            const IndexNo = document.getElementById('IndexNo').value;
+            const Name = document.getElementById('Name').value;
+            const DoB = document.getElementById('DoB').value;
+            const GPA = document.getElementById('GPA').value;
+
+            // Send a POST request to the server to add a student
+            fetch('http://localhost:3000/students', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    IndexNo,
+                    Name,
+                    DoB,
+                    GPA
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // After adding a student, fetch the updated list
+                fetchStudents();
+            })
+            .catch(error => console.error('Error adding student:', error));
+        });
+
+        // Function to delete a student
+        function deleteStudent(studentId) {
+            fetch(`http://localhost:3000/students/${studentId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                // After deleting a student, fetch the updated list
+                fetchStudents();
+            })
+            .catch(error => console.error('Error deleting student:', error));
+        }
+    </script>
+</body>
+</html>
