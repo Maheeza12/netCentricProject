@@ -1,1 +1,17 @@
-node_modules
+# Ignore node_modules directory
+node_modules/
+
+# Ignore the Git directory and files
+.git/
+.gitignore
+
+# Ignore log files
+*.log
+
+# Ignore temporary or build files
+*.tmp
+*.bak
+*.swp
+
+# Ignore package lock files (if rebuilding dependencies from scratch)
+package-lock.json
