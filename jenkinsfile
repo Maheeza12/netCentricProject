@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'b128a8fa-6f96-4b6e-b6a3-314abac716a3'  // Jenkins credentials ID
+        DOCKER_CREDENTIALS_ID = '9256c4ce-3fac-44a8-9405-6b7f5b6c562e'  // Jenkins credentials ID
     }
 
     stages {
@@ -26,7 +26,7 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, 
+                withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', 
                                                   usernameVariable: 'DOCKER_USER', 
                                                   passwordVariable: 'DOCKER_PASS')]) {
                     script {
@@ -40,7 +40,7 @@ pipeline {
                         
                         // Log into Docker Hub
                         bat """
-                            echo "%DOCKER_PASS%" | docker login -u %DOCKER_USER% --password-stdin
+                            echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
                             if %ERRORLEVEL% NEQ 0 (
                                 echo Docker login failed! Error code: %ERRORLEVEL%
                                 exit /b %ERRORLEVEL%
