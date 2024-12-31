@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = '9256c4ce-3fac-44a8-9405-6b7f5b6c562e'  // Jenkins credentials ID
+        DOCKER_CREDENTIALS_ID = '9256c4ce-3fac-44a8-9405-6b7f5b6c562e'  
     }
 
     stages {
@@ -30,24 +30,26 @@ pipeline {
                                                   usernameVariable: 'DOCKER_USER', 
                                                   passwordVariable: 'DOCKER_PASS')]) {
                     script {
-                        // Debug: Verify that credentials are passed correctly
-                        echo "Docker username: %DOCKER_USER%" // Safe to print username, using % for Windows
+                        
+                        echo "Docker username: %DOCKER_USER%" 
 
-                        // Check if password is set
+                        
                         if (!DOCKER_PASS) {
                             error "Password variable is empty. Check Jenkins credentials."
                         }
 
-                        // Log into Docker Hub
+                     
                         bat """
-                            echo "Maheeza1998" | docker login -u %DOCKER_USER% --password-stdin
+                            echo %DOCKER_PASS% > password.txt
+                            docker login -u %DOCKER_USER% --password-stdin < password.txt
                             if %ERRORLEVEL% NEQ 0 (
                                 echo Docker login failed! Error code: %ERRORLEVEL%
                                 exit /b %ERRORLEVEL%
                             )
+                            del password.txt
                         """
                         
-                        // Push Docker images
+                       
                         bat 'docker-compose push'
                     }
                 }
