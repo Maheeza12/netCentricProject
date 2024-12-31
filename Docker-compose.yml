@@ -1,33 +1,45 @@
 services:
   frontend:
     build:
-      context: ./frontend  # Path to your frontend directory with the Dockerfile
+      context: ./frontend  
       dockerfile: Dockerfile.frontend
     ports:
-      - "8080:80"  # Exposes port 8080 on host and port 80 in container (for Nginx)
+      - "8080:80"  
     volumes:
-      - ./frontend:/usr/share/nginx/html  # Optionally mount files for easy updates
+      - ./frontend:/usr/share/nginx/html  
 
   backend:
     build:
-      context: ./backend  # Path to your backend directory with the Dockerfile
+      context: ./backend
       dockerfile: Dockerfile.backend
     ports:
-      - "3000:3000"  # Exposes port 3000 on host and port 3000 in container (for Node.js)
+      - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=MDIsql1223@#  
+      - DB_NAME=student_management
     depends_on:
-      - mysql  # If you have a database container, this ensures the backend waits for it
+      mysql:
+        condition: service_healthy  
 
   mysql:
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: MDIsql1223@#
+      MYSQL_ROOT_PASSWORD: MDIsql1223@#  
       MYSQL_DATABASE: student_management
     ports:
-      - "3306:3306"  # Exposes MySQL on host port 3306
+      - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  # Persist data
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword@#"]
+      interval: 10s
+      retries: 5
+      start_period: 30s  
+      timeout: 5s
 
 volumes:
-  mysql_data:  # Declare a volume for persistent data
+  mysql_data:

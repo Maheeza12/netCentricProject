@@ -1,5 +1,12 @@
 # Student Management System
 
+## Check if the ports are available:
+
+netstat -ano | findstr :3306
+netstat -ano | findstr :3000
+netstat -ano | findstr :8080
+
+
 ## Running the Application
 
 1. Install [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/).
