@@ -6,6 +6,8 @@ netstat -ano | findstr :3306
 netstat -ano | findstr :3000
 netstat -ano | findstr :8080
 
+## Stop any running containers
+docker-compose down
 
 ## Running the Application
 
