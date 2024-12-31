@@ -40,13 +40,11 @@ pipeline {
 
                      
                         bat """
-                            echo %DOCKER_PASS% > password.txt
-                            docker login -u %DOCKER_USER% --password-stdin < password.txt
+                            echo DOCKER_PASS | docker login -u %DOCKER_USER% --password-stdin
                             if %ERRORLEVEL% NEQ 0 (
                                 echo Docker login failed! Error code: %ERRORLEVEL%
                                 exit /b %ERRORLEVEL%
                             )
-                            del password.txt
                         """
                         
                        
