@@ -13,19 +13,19 @@ pipeline {
         }
         stage('Build Docker Images') {
             steps {
-                sh 'docker-compose build'
+                bat 'docker-compose build'
             }
         }
         stage('Test Backend') {
             steps {
-                sh 'docker-compose run backend npm test'
+                bat 'docker-compose run backend npm test'
             }
         }
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${Maheeza12}", 
+                withCredentials([usernamePassword(credentialsId: "${b128a8fa-6f96-4b6e-b6a3-314abac716a3}", 
                               usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
+                    bat '''
                     echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
                     docker-compose push
                     '''
@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'docker-compose up -d'
+                bat 'docker-compose up -d'
             }
         }
     }
