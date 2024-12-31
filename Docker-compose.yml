@@ -3,7 +3,7 @@ services:
     build:
       context: ./frontend  
       dockerfile: Dockerfile.frontend
-    image: docker.io/Maheeza12/frontend:latest
+    image: Maheeza12/frontend:latest
     ports:
       - "8080:80"  
     volumes:
@@ -13,7 +13,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.backend
-    image: docker.io/Maheeza12/backend:latest
+    image: Maheeza12/backend:latest
     ports:
       - "3000:3000"
     environment:
