@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'b128a8fa-6f96-4b6e-b6a3-314abac716a3' 
+        DOCKER_CREDENTIALS_ID = 'b128a8fa-6f96-4b6e-b6a3-314abac716a3'  // Jenkins credentials ID
     }
 
     stages {
@@ -11,31 +11,65 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/Maheeza12/netCentricProject'
             }
         }
+
         stage('Build Docker Images') {
             steps {
                 bat 'docker-compose build'
             }
         }
+
         stage('Test Backend') {
             steps {
                 bat 'docker-compose run backend npm test'
             }
         }
+
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "b128a8fa-6f96-4b6e-b6a3-314abac716a3", 
-                              usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    bat '''
-                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
-                    docker-compose push
-                    '''
+                withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, 
+                                                  usernameVariable: 'DOCKER_USER', 
+                                                  passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        // Debug: Verify that credentials are passed correctly
+                        echo "Docker username: %DOCKER_USER%" // This is safe because it prints the username, not the password.
+                        
+                        // Check if password is set
+                        if (!env.DOCKER_PASS) {
+                            error "Password variable is empty. Check Jenkins credentials."
+                        }
+                        
+                        // Log into Docker Hub
+                        bat """
+                            echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                            if %ERRORLEVEL% NEQ 0 (
+                                echo Docker login failed! Error code: %ERRORLEVEL%
+                                exit /b %ERRORLEVEL%
+                            )
+                        """
+                        
+                        // Push Docker images
+                        bat 'docker-compose push'
+                    }
                 }
             }
         }
+
         stage('Deploy') {
             steps {
                 bat 'docker-compose up -d'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up and finishing the pipeline.'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }
