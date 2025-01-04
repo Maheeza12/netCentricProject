@@ -9,6 +9,9 @@ netstat -ano | findstr :8080
 ## Stop any running containers
 docker-compose down
 
+## GIT repository
+https://github.com/Maheeza12/netCentricProject
+
 ## Running the Application
 
 1. Install [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/).
